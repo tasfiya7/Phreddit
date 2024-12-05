@@ -36,3 +36,43 @@
     transform: rotate(360deg);
   }
 }
+
+:root {
+  overflow-y: hidden
+}
+
+.app-container {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+}
+
+.main{
+  width: 80%;
+  height: 85%;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.post-list-page, .home-page, .community-page, .post-page {
+  overflow-y: auto;
+  overflow-x: hidden;
+  width: auto;
+  padding: 20px;
+}
+
+/*Link-Flair Styling*/
+
+.link-flair {
+  display: inline-block;
+  padding: 5px;
+  margin: 5px 0;
+  border: 0;
+  border-radius: 5px;
+  color: white;
+  background-color: #FF4500;
+  p {
+      font-size: 12px;
+  }
+}
+
