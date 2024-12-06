@@ -1,0 +1,68 @@
+.navbar {
+  width: 20%;
+  padding: 20px;
+  border-right: 1px solid black;
+  box-sizing: border-box;
+  height: 85%;
+  overflow-y: auto;
+
+  hr {
+    margin: 20px 0;
+    border: 1px solid black;
+  }
+
+  h3 {
+    margin: 0;
+  }
+}
+
+.navbar::-webkit-scrollbar {
+  display: none;
+}
+
+.home-btn {
+  width: 100%;
+  padding: 10px;
+  background-color: lightgray;
+  color: black;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer; 
+}
+
+.home-btn:hover {
+  background-color: orangered;
+  color: white;
+}
+
+.create-community-btn {
+  width: 100%;
+  padding: 10px;
+  margin-top: 15px; /* Adds space above the button */
+  margin-bottom: 10px;
+  background-color: grey;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.create-community-btn:hover {
+  background-color: orangered;
+}
+
+.community-btn {
+  width: 100%;
+  padding: 10px;
+  margin-top: 15px; /* Adds space above the button */
+  background-color: lightgray;
+  color: black;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.community-btn:hover {
+  background-color: orangered;
+  color: white;
+}

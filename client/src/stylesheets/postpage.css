@@ -1,0 +1,49 @@
+.post-page{
+    p {
+        margin: 0;
+    }
+
+    h2 {
+        margin-top: 5px;
+        margin-bottom: 10px;
+    }
+
+    .post-section, .comment-section {
+        margin-right: 40px;
+        margin-left: 20px;
+    }
+
+    .counters{
+        margin: 15px 0;
+    }
+
+    .comment {
+        margin: 20px 0;
+
+        p {
+            margin: 8px 0;
+        }
+    }
+
+    button {
+        background-color: lightgray;
+        color: black;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer; 
+    }
+      
+    button:hover {
+        background-color: orangered;
+        color: white;
+    }
+
+    .comment-btn {
+        padding: 8px;
+        margin-bottom: 5px;
+    }
+
+    .reply-btn {
+        padding: 6px 8px;
+    }
+}

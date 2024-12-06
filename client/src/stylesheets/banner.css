@@ -1,0 +1,50 @@
+.banner {
+  background-color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin: 20px;
+}
+
+.banner-btn {
+  background-color: white;
+  color: orangered;
+  font-size: 250%;
+  font-weight: bold;
+  border: none;
+
+  padding: 20px 0px;
+  cursor: pointer;
+}
+
+.search-bar, .create-post-btn {
+  display: block;
+  font-size: 20px;
+  padding: 20px;
+  border: 1px solid #000;
+}
+
+.search-bar {
+  border-radius: 50px;
+  max-width: 150%;
+  width: auto;
+}
+
+#create-post{
+  color: #000;
+  text-decoration: none;
+}
+
+.create-post-btn {
+  background-color: lightgray;
+  border-radius: 15px;
+  cursor: pointer;
+  border: none;
+}
+
+.create-post-btn:hover{
+  background-color: #FF4500;
+  color: #fff;
+}
+

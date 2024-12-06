@@ -1,0 +1,101 @@
+/* newCommunityPage.css */
+
+/* Container for the entire page */
+.new-community-page-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #f9f9f9;
+    padding: 20px;
+  }
+  
+  /* Form Styling */
+  .new-community-form {
+    background-color: white;
+    padding: 30px;
+    width: 400px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  /* Form Group Styling */
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  /* Input, Textarea Styling */
+  .new-community-form input,
+  .new-community-form textarea {
+    padding: 10px;
+    font-size: 16px;
+    font-family: 'Arial', sans-serif;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+    resize: vertical;
+  }
+  
+  .new-community-form input:focus,
+  .new-community-form textarea:focus {
+    border-color: #ff4500;
+    outline: none;
+  }
+  
+  /* Error Message Styling */
+  .error {
+    color: red;
+    font-size: 14px;
+    margin-top: 5px;
+  }
+  
+  /* Button Styling */
+  .form-actions {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .submit-btn,
+  .cancel-btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  /* Submit Button */
+  .submit-btn {
+    background-color: #ff4500;
+    color: white;
+  }
+  
+  .submit-btn:hover {
+    background-color: #e03d00;
+  }
+  
+  /* Cancel Button */
+  .cancel-btn {
+    background-color: grey;
+    color: white;
+  }
+  
+  .cancel-btn:hover {
+    background-color: #555;
+  }
+  
+  .new-community-main {
+    height: calc(100vh - 80px); /* Full height minus banner */
+    display: flex;
+    justify-content: center;
+    background-color: #f9f9f9; /* Optional background color */
+  }
+  

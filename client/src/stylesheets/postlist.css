@@ -1,0 +1,65 @@
+.pl-header {
+    padding: 0 20px;
+
+    .box {
+        display: flex;
+        justify-content: space-between;
+        padding: 0 0;
+        margin: 0 0;
+        border: 0px solid #000;
+    
+        h2 {
+            margin: 10px 0px;
+            margin-right: 10px;
+        }
+    }
+    
+    .sort-box {
+        display: flex;
+        justify-content: space-around;
+        padding: 0px 0px;
+        margin: 5px;
+    }
+    
+    .sort-btn {
+        display: block;
+        border: 0px solid #000;
+        border-radius: 5px;
+        text-align: center;
+        cursor: pointer;
+        padding: 0px 20px;
+        margin: 0 5px;
+    }
+    
+    .sort-btn:hover {
+        background-color: orangered;
+        color : #fff;
+    }
+}
+
+
+.postlist {
+    padding: 0 20px;
+
+    .post {
+        padding: 10px 0;
+        cursor: pointer;
+        width: 100%;
+
+        p {
+            margin: 0;
+        }
+    }
+      
+    .post:hover {
+        background-color: #f0f0f0;
+    }
+
+    hr {
+        padding-top: 20;
+        border: 2px dotted #000;
+        border-style: none none dotted; 
+    }
+}
+
+  
