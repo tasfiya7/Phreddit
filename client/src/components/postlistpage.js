@@ -69,7 +69,7 @@ export default function PostListPage({ model, mode, title, initialPosts, onPostS
               {!(mode === 'community') ? (<><strong>
                 {model.data.communities.find(c => c.postIDs.includes(post.postID)).name}
               </strong> | </>) : ''}
-              {post.postedBy} | {timestampsdt(post.postedDate)}
+              {post.postedBy.displayName} | {timestampsdt(post.postedDate)}
             </p>
             <p><strong>{post.title}</strong></p>
             {post.linkFlairID && <span className="link-flair"><p>{model.data.linkFlairs.find(lf => lf.linkFlairID === post.linkFlairID).content}</p></span>}
@@ -96,7 +96,7 @@ export default function PostListPage({ model, mode, title, initialPosts, onPostS
         </>}
         <p>
           {initialPosts.length} Post{initialPosts.length === 1 ? '' : 's'}
-          {mode === 'community' && <> | {model.data.communities.find(c => c.name === title).members.length} Members</>}
+          {mode === 'community' && <> | {model.data.communities.find(c => c.name === title).memberCount} Members</>}
         </p>
       </div>
       <hr></hr>

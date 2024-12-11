@@ -12,11 +12,11 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
 // Import your models here
-const UserModel = require('./models/User'); 
-const CommunityModel = require('./models/Community');
-const PostModel = require('./models/Post');
-const CommentModel = require('./models/Comment');
-const LinkFlairModel = require('./models/LinkFlair');
+const UserModel = require('./models/users'); 
+const CommunityModel = require('./models/communities');
+const PostModel = require('./models/posts');
+const CommentModel = require('./models/comments');
+const LinkFlairModel = require('./models/linkflairs');
 
 const uri = 'mongodb://127.0.0.1:27017/phreddit'; // Database URI
 const saltRounds = 10;
@@ -56,7 +56,6 @@ async function initializeDatabase(adminEmail, adminDisplayName, adminPassword) {
         const community1 = new CommunityModel({
             name: 'Am I the Jerk?',
             description: 'A practical application of the principles of justice.',
-            postIDs: [postRef1._id],
             startDate: new Date('August 10, 2014 04:18:00'),
             members: [adminUser._id],
             memberCount: 1,
@@ -65,7 +64,6 @@ async function initializeDatabase(adminEmail, adminDisplayName, adminPassword) {
         const community2 = new CommunityModel({
             name: 'The History Channel',
             description: 'A fantastical reimagining of our past and present.',
-            postIDs: [postRef2._id],
             startDate: new Date('May 4, 2017 08:32:00'),
             members: [adminUser._id],
             memberCount: 1,
@@ -130,7 +128,6 @@ async function initializeDatabase(adminEmail, adminDisplayName, adminPassword) {
             content: 'JavaScript is versatile, but Python has cleaner syntax.',
             commentedBy: adminUser._id,
             post: post1._id,
-            parentComment: savedParentComment._id,
             commentedDate: new Date('2024-08-16T15:00:00Z'),
             upvotes: 10,
             downvotes: 1,
@@ -141,7 +138,6 @@ async function initializeDatabase(adminEmail, adminDisplayName, adminPassword) {
             content: 'I prefer Rust for performance-critical tasks.',
             commentedBy: adminUser._id,
             post: post1._id,
-            parentComment: savedParentComment._id,
             commentedDate: new Date('2024-08-16T16:00:00Z'),
             upvotes: 15,
             downvotes: 0,
@@ -151,8 +147,10 @@ async function initializeDatabase(adminEmail, adminDisplayName, adminPassword) {
         const savedChildComment1 = await childComment1.save();
         const savedChildComment2 = await childComment2.save();
 
-        // Update post1 with commentIDs
-        post1.commentIDs = [savedParentComment._id, savedChildComment1._id, savedChildComment2._id];
+
+        savedParentComment.commentIDs = [savedChildComment1._id, savedChildComment2._id];
+        await savedParentComment.save();
+        post1.commentIDs = [savedParentComment._id];
         await post1.save();
 
 

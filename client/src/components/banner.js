@@ -4,7 +4,7 @@ import '../stylesheets/newpost.css';
 
 
 
-export default function Banner({ mode, onSelectHome, onSearch, onCreatePost}) {
+export default function Banner({ mode, userMode, onSelectHome, onSearch, onCreatePost}) {
   const [searchQuery, setSearchQuery] = useState('');
 
   return (
@@ -19,18 +19,19 @@ export default function Banner({ mode, onSelectHome, onSearch, onCreatePost}) {
         className="search-bar" 
         onInput={(e) => setSearchQuery(e.target.value)}
         onKeyDown={(e) => {
-          if (e.key === 'Enter') {
+          if (userMode && e.key === 'Enter') {
             onSearch(searchQuery);
           }
         }}
         />
       <button 
         className="create-post-btn" 
-        onClick={onCreatePost}
+        onClick={userMode === 'user' ? () => onCreatePost() : null}
         style={{ 
           backgroundColor: mode === 'newPost' ? 'orangered' : '',
           color: mode === 'newPost' ? 'white' : '',
         }}
+        id={userMode === 'user' ? 'user' : 'guest'}
       >Create Post</button>
     </div>
   );

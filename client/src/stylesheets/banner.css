@@ -39,11 +39,19 @@
 .create-post-btn {
   background-color: lightgray;
   border-radius: 15px;
-  cursor: pointer;
   border: none;
 }
 
-.create-post-btn:hover{
+.create-post-btn#user {
+  cursor: pointer;
+}
+
+.create-post-btn#guest {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.create-post-btn#user:hover{
   background-color: #FF4500;
   color: #fff;
 }

@@ -47,9 +47,20 @@
   cursor: pointer;
 }
 
-.create-community-btn:hover {
-  background-color: orangered;
+.create-community-btn#user {
+  cursor: pointer;
 }
+
+.create-community-btn#guest {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.create-community-btn#user:hover {
+  background-color: orangered;
+  color: white;
+}
+
 
 .community-btn {
   width: 100%;
@@ -62,7 +73,12 @@
   cursor: pointer;
 }
 
-.community-btn:hover {
+.community-btn#guest {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.community-btn#user:hover {
   background-color: orangered;
   color: white;
 }

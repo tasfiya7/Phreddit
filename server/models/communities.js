@@ -12,9 +12,9 @@ var CommunitySchema = new Schema({
 }, { timestamps: true });
 
 
-CommunitySchema.virtual('memberCount').get(function () {
-    return this.members.length;
-});
+// CommunitySchema.virtual('memberCount').get(function () {
+//     return this.members.length;
+// });
 
 CommunitySchema.virtual('url').get(function () {
     return '/communities/' + this._id;

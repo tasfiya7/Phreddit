@@ -6,6 +6,7 @@ import PostPage from './postpage.js';
 import NewPostPage from './newPostPageView.js';
 import NewCommunityPage from './newCommunityPageView.js';
 import NewCommentPage from './newCommentPageView.js';
+import WelcomePage from './welcome.js';
 
 import '../stylesheets/postlist.css';
 
@@ -13,18 +14,20 @@ import axios from 'axios';
 
 const api = axios.create({
   baseURL: 'http://localhost:8000',
+  withCredentials: true,
 });
 
 // Fetch the data from the server
 async function fetchData () {
+  const users1 = await api.get('/users').then(res => res.data);
   const posts1 = await api.get('/posts').then(res => res.data);
   const communities1 = await api.get('/communities').then(res => res.data);
   const linkFlairs1 = await api.get('/linkFlairs').then(res => res.data);
   const comments1 = await api.get('/comments').then(res => res.data);
 
-  posts1.forEach(post => {
-    post.postID = post._id;
-    post.postedDate = new Date(post.postedDate);
+  users1.forEach(user => { 
+    user.userID = user._id;
+    user.joinedDate = new Date(user.createdAt);
   });
   communities1.forEach(community => {
     community.communityID = community._id;
@@ -36,6 +39,12 @@ async function fetchData () {
   comments1.forEach(comment => {
     comment.commentID = comment._id;
     comment.commentedDate = new Date(comment.commentedDate);
+    comment.commentedBy = users1.find(u => u.userID === comment.commentedBy);
+  });
+  posts1.forEach(post => {
+    post.postID = post._id;
+    post.postedDate = new Date(post.postedDate);
+    post.postedBy = users1.find(u => u.userID === post.postedBy);
   });
 
   const model = {data: {
@@ -43,6 +52,7 @@ async function fetchData () {
     communities: communities1, 
     linkFlairs:linkFlairs1, 
     comments: comments1,
+    users: users1,
   }}
 
   return model;
@@ -50,7 +60,7 @@ async function fetchData () {
 
 var model = await fetchData();
 
-//console.log(model);
+console.log(model);
 
 const search = (model, query) => {
   const queryList = query.trim().toLowerCase().split(' ');
@@ -86,14 +96,68 @@ function checkComments(model, commentID, queryListJoined) {
 }
 
 export default function Phreddit() {
-  const [view, setView] = useState('home'); // Track current view (home, community, post)
+  const [view, setView] = useState('welcome'); // Track current view (home, community, post)
   const [selectedCommunity, setSelectedCommunity] = useState(null); // Track selected community
   const [selectedPost, setSelectedPost] = useState(null); // Track selected post
   const [searchQuery, setSearchQuery] = useState(''); // Track search query
   const [searchResults, setSearchResults] = useState(); // Track search results
   const [commentParentID, setCommentParentID] = useState(null); // Track the parent ID of the comment
   const [commentParentType, setCommentParentType] = useState('');
+  const [userMode, setUserMode] = useState(null); // null, 'guest', or 'user'
+  const [session, setSession] = useState(null); // Session State
 
+  // Creating Communities
+  const handleCreateCommunityView = () => {
+    setSelectedCommunity(null);
+    setSelectedPost(null);
+    setView('newCommunity');
+  };
+
+  const handleCommunitySubmit =  async (newCommunity) => {
+    //model.data.communities.push(newCommunity); // Add new community to the model
+
+    const newCommunityID = await api.post('/communities', {
+      name: newCommunity.name,
+      description: newCommunity.description,
+      startDate: newCommunity.startDate,
+      members: newCommunity.members,
+      memberCount: newCommunity.memberCount,
+    });
+
+    model = await fetchData();
+
+    setSelectedCommunity(model.data.communities.find(c => c.communityID === newCommunityID.data));
+    setView('community'); // Navigate to the new community's page
+  };
+
+  // Creating Posts
+  const handleCreatePost = () => {
+    setSelectedCommunity(null);
+    setSelectedPost(null);
+    setView('newPost');
+  };
+
+  const handlePostSubmit = async (newPost, community) => {
+    model.data.posts.push(newPost); // Add the new post to the top of the list
+
+    await api.post('/posts', {
+      title: newPost.title,
+      content: newPost.content,
+      linkFlairID: newPost.linkFlairID,
+      postedBy: newPost.postedBy,
+      postedDate: newPost.postedDate,
+      views: newPost.views,
+
+      communityID: community.communityID,
+      newFlair: newPost.newFlair,
+    });
+
+    model = await fetchData();
+    
+    handleHomeView();
+  };
+
+  // Creating Comments
   const handleCreateCommentView = (parentID, parentType) => {
     setCommentParentID(parentID);
     setCommentParentType(parentType);
@@ -135,14 +199,6 @@ export default function Phreddit() {
     setView('post'); // Return to the Post Page view
   };
 
-
-  // Handle switching to the home view
-  const handleHomeView = () => {
-    setSelectedCommunity(null);
-    setSelectedPost(null);
-    setView('home');
-  };
-  
   // Handle search
   const handleSearch = (query) => {
     if(query.trim() === '') {
@@ -155,44 +211,15 @@ export default function Phreddit() {
     setSelectedPost(null);
     setView('search');
   };
-
-  const handleCreateCommunityView = () => {
-    setSelectedCommunity(null);
-    setSelectedPost(null);
-    setView('newCommunity');
-  };
-
+  
+  // Handle selecting a community (from the navbar)
   const handleCommunitySelect = (communityID) => {
     const community = model.data.communities.find(c => c.communityID === communityID);
     setSelectedCommunity(community);
     setView('community');
   };
 
-  const handleCommunitySubmit =  async (newCommunity) => {
-    //model.data.communities.push(newCommunity); // Add new community to the model
-
-    const newCommunityID = await api.post('/communities', {
-      name: newCommunity.name,
-      description: newCommunity.description,
-      startDate: newCommunity.startDate,
-      members: newCommunity.members,
-      memberCount: newCommunity.memberCount,
-    });
-
-    model = await fetchData();
-
-    setSelectedCommunity(model.data.communities.find(c => c.communityID === newCommunityID.data));
-    setView('community'); // Navigate to the new community's page
-  };
-
-  // Handle switching to the New Post Page view
-  const handleCreatePost = () => {
-    setSelectedCommunity(null);
-    setSelectedPost(null);
-    setView('newPost');
-  };
-
-  // Handle switching to a selected post view
+  // Handle selecting a post (from the post list)
   const handlePostSelect = async (postID) => {
     const community = model.data.communities.find(c => c.postIDs.includes(postID));
     var post = model.data.posts.find(p => p.postID === postID);
@@ -206,27 +233,26 @@ export default function Phreddit() {
     setView('post');
   };
 
-  const handlePostSubmit = async (newPost, community) => {
-    model.data.posts.push(newPost); // Add the new post to the top of the list
-    // const targetCommunity = model.data.communities.find(c => c.communityID === community.communityID);
-    // targetCommunity.postIDs.push(newPost.postID); // Add the new post to the community
-    // console.log('Submitting new post: ', newPost, targetCommunity.postIDs);
+  // Handle logging in
+  const handleLogin = (session) => {
+    if(session === 'guest') {
+      setUserMode('guest');
+    } else {
+      setUserMode('user');
+      setSession(session);
+    }
+    setView('home');
+  };
 
-    await api.post('/posts', {
-      title: newPost.title,
-      content: newPost.content,
-      linkFlairID: newPost.linkFlairID,
-      postedBy: newPost.postedBy,
-      postedDate: newPost.postedDate,
-      views: newPost.views,
-
-      communityID: community.communityID,
-      newFlair: newPost.newFlair,
-    });
-
-    model = await fetchData();
-    
-    handleHomeView();
+  // Handle switching to the home view
+  const handleHomeView = () => {
+    setSelectedCommunity(null);
+    setSelectedPost(null);
+    if (!userMode) {
+      setView('welcome');
+    } else {
+      setView('home');
+    }
   };
 
   // Render the appropriate view based on the current state
@@ -238,10 +264,18 @@ export default function Phreddit() {
 
     window.scrollTo(0, 0); // Always scroll to top
 
+    if (view === 'welcome') {
+      return (<WelcomePage
+        api = {api}
+        model = {model}
+        onLogin={handleLogin}
+      />);
+    }
     if (view === 'home') {
       return (<PostListPage
         model = {model}
         mode = {view}
+        userMode = {userMode}
         title = "All Posts"
         initialPosts={model.data.posts} 
         onPostSelect={handlePostSelect} 
@@ -304,6 +338,7 @@ export default function Phreddit() {
     <>
       <Banner 
         mode={view} 
+        userMode={userMode}
         onSelectHome={handleHomeView} 
         onSearch={handleSearch}
         onCreatePost={handleCreatePost} 
@@ -312,6 +347,7 @@ export default function Phreddit() {
       <div className="app-container">
         <Navbar 
           mode={view} 
+          userMode={userMode}
           onSelectHome={handleHomeView} 
           communities={model.data.communities} 
           onSelectCommunity={handleCommunitySelect}

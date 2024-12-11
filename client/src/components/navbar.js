@@ -1,9 +1,8 @@
-
 import '../stylesheets/navbar.css';
 import '../stylesheets/community.css';
 import React, { useState } from 'react';
 
-export default function Navbar({ mode, onSelectHome, communities, onCreateCommunity, onSelectCommunity, selectedCommunity }) {
+export default function Navbar({ mode, userMode, onSelectHome, communities, onCreateCommunity, onSelectCommunity, selectedCommunity }) {
   
 
   return (
@@ -11,8 +10,8 @@ export default function Navbar({ mode, onSelectHome, communities, onCreateCommun
       <button
         className="home-btn"
         style={{ 
-          backgroundColor: mode === 'home' ? 'orangered' : '',
-          color: mode === 'home' ? 'white' : '',
+          backgroundColor: (mode === 'home' || mode === 'welcome')? 'orangered' : '',
+          color: (mode === 'home' || mode === 'welcome')? 'white' : '',
         }}
         onClick={() => onSelectHome()}
       >
@@ -21,12 +20,12 @@ export default function Navbar({ mode, onSelectHome, communities, onCreateCommun
       <hr></hr>
       <h3>Communities</h3>
       <button className="create-community-btn"
+        onClick={userMode === 'user' ? () => onCreateCommunity() : null}
         style={{
-          backgroundColor: mode === 'newCommunity' ? 'orangered' : 'grey',
-          color: 'white',
+          backgroundColor: mode === 'newCommunity' ? 'orangered' : '',
+          color: mode === 'newCommunity' ? 'white' : '',
         }}
-        onClick={() => onCreateCommunity()}
-        
+        id = {userMode === 'user' ? 'user' : 'guest'}
       >Create Community</button>
       {communities.map((community) => (
         <div key={community.communityID}>
@@ -36,7 +35,9 @@ export default function Navbar({ mode, onSelectHome, communities, onCreateCommun
               backgroundColor: selectedCommunity && (community.communityID === selectedCommunity.communityID) ? 'black' : '',
               color: selectedCommunity && (community.communityID === selectedCommunity.communityID) ? 'white' : '',
             }}
-            onClick={() => onSelectCommunity(community.communityID)}
+            onClick={userMode ? () => onSelectCommunity(community.communityID) : null}
+            id = {userMode ? 'user' : 'guest'}
+            /*For actual community buttons, allow clicking once even in guest mode*/
           >
             {community.name}
           </button>
