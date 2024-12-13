@@ -7,6 +7,7 @@ import NewPostPage from './newPostPageView.js';
 import NewCommunityPage from './newCommunityPageView.js';
 import NewCommentPage from './newCommentPageView.js';
 import WelcomePage from './welcome.js';
+import ProfilePage from './profilePage.js';
 
 import '../stylesheets/postlist.css';
 
@@ -59,7 +60,6 @@ async function fetchData () {
 }
 
 var model = await fetchData();
-
 
 const search = (model, query) => {
   const queryList = query.trim().toLowerCase().split(' ');
@@ -210,6 +210,19 @@ export default function Phreddit() {
     setView('community');
   };
 
+  // Handle join/leave community
+  const handleJoinLeave = async () => {
+    await api.put('/joinleave', {
+      communityID: selectedCommunity.communityID,
+      userID: user,
+    });
+
+    model = await fetchData();
+    setSelectedCommunity(model.data.communities.find(c => c.communityID === selectedCommunity.communityID));
+    setView('community');
+  };
+
+
   // Handle selecting a post (from the post list)
   const handlePostSelect = async (postID) => {
     const community = model.data.communities.find(c => c.postIDs.includes(postID));
@@ -241,7 +254,7 @@ export default function Phreddit() {
   const handleProfileView = () => {
     setSelectedCommunity(null);
     setSelectedPost(null);
-    handleHomeView();
+    setView('profile');
   };
 
   // Logging out
@@ -260,6 +273,7 @@ export default function Phreddit() {
 
   // Handle logging in
   const handleLogin = async (userID) => {
+    model = await fetchData();
     if(userID === 'guest') {
       if(userMode === 'user') {
         await logout();
@@ -318,6 +332,7 @@ export default function Phreddit() {
         model = {model}
         mode = {view}
         userMode = {userMode}
+        user = {user}
         title = "All Posts"
         initialPosts={model.data.posts} 
         onPostSelect={handlePostSelect} 
@@ -327,9 +342,12 @@ export default function Phreddit() {
       return (<PostListPage
         model = {model} 
         mode = {view}
+        userMode = {userMode}
+        user = {user}
         title = {selectedCommunity.name}
         initialPosts={model.data.posts.filter(p => selectedCommunity.postIDs.includes(p.postID))}
         onPostSelect={handlePostSelect}
+        onJoin={handleJoinLeave}
       />);
     }
     if (view === 'post') {
@@ -346,6 +364,8 @@ export default function Phreddit() {
       return (<PostListPage
         model = {model}
         mode = {view}
+        userMode = {userMode}
+        user = {user}
         title = { 
           ((searchResults.length > 0) ? "Results for:" : "No results found for:" ) + ' ' + searchQuery
         }
@@ -378,6 +398,13 @@ export default function Phreddit() {
         parentType={commentParentType}
       />);
     }
+    if (view === 'profile') {
+      return (<ProfilePage
+        model={model}
+        userMode={userMode}
+        user={user}
+      />);
+    }
   };
 
   return (
@@ -397,6 +424,7 @@ export default function Phreddit() {
         <Navbar 
           mode={view} 
           userMode={userMode}
+          user={user}
           onSelectHome={handleHomeView} 
           communities={model.data.communities} 
           onSelectCommunity={handleCommunitySelect}

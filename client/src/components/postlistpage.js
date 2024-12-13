@@ -50,26 +50,47 @@ const getLastCommentDate = (model, commentIDs) => {
   return latestDate;
 }
 
-export default function PostListPage({ model, mode, title, initialPosts, onPostSelect }) {
+export default function PostListPage({ model, mode, userMode, user, title, initialPosts, onPostSelect, onJoin }) {
   const [sort, setSort] = useState('newest');
 
   const handleSortSelect = (sort) => {
     setSort(sort);
   };
 
-
   if(mode === 'community'){
     var community = model.data.communities.find(c => c.name === title);
     var madeBy = model.data.users.find(u => u.userID === community.madeBy);
+    var isUserMember = community.members.includes(user) ? true : false;
   }
 
   const renderPostList = () => {
     if(initialPosts.length === 0) return;
-    const posts = sortPosts(model, initialPosts, sort);
+    var posts = sortPosts(model, initialPosts, sort);
 
-    return posts.map(post => {
-      return (
-        <div key={post.postID}>
+    if(mode !== 'community' && userMode === 'user'){
+      // Split posts into two arrays: user's posts and other posts
+      const userCommunities = model.data.communities.filter(c => c.members.includes(user));
+      var posts = initialPosts.filter(post => userCommunities.find(c => c.postIDs.includes(post.postID)));
+      posts = sortPosts(model, posts, sort);
+      var otherPosts = initialPosts.filter(post => !userCommunities.find(c => c.postIDs.includes(post.postID)));
+      otherPosts = sortPosts(model, otherPosts, sort);
+    }
+
+    return (
+      <>
+        {posts && posts.map(post => renderPost(post))}
+        {otherPosts && <>
+          <h3>Other Communities:</h3>
+          <hr/>
+          {otherPosts.map(post => renderPost(post))}
+        </>}
+      </>
+    )
+  }
+
+  const renderPost = (post) => {
+    return (
+      <div key={post.postID}>
           <div className="post" onClick={() => onPostSelect(post.postID)}>
             <p>
               {!(mode === 'community') ? (<><strong>
@@ -87,8 +108,7 @@ export default function PostListPage({ model, mode, title, initialPosts, onPostS
           </div>
           <hr></hr>
         </div>
-      );
-    });
+    )
   }
   
 
@@ -100,10 +120,16 @@ export default function PostListPage({ model, mode, title, initialPosts, onPostS
           <p className="community-description">{community.description}</p>
           <p>Created {timestampsdt(community.startDate)} by {madeBy.displayName}</p>
         </>}
-        <p>
+        <div>
           {initialPosts.length} Post{initialPosts.length === 1 ? '' : 's'}
           {mode === 'community' && <> | {community.memberCount} Members</>}
-        </p>
+          {mode === 'community' && userMode === 'user' && <button
+            id='join-btn'
+            className={(isUserMember) ? 'leave' : 'join'}
+            onClick={() => onJoin()}
+          >{(isUserMember) ? 'Leave' : 'Join'}
+          </button>}
+        </div>
       </div>
       <hr></hr>
       <div className="postlist">{renderPostList()}</div>

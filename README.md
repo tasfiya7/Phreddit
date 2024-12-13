@@ -12,6 +12,15 @@ your application running.
 In the sections below, list and describe each contribution briefly.
 
 ## Minhaj Contribution
+Profile Page
+Nav Bar Sorting
+Post Sorting
+Login
+Community Joining
 
 ## Tasfiya Contribution
-
+UML Diagrams
+Server Diagram
+Component Tree
+Routes
+User Model

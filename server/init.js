@@ -45,6 +45,17 @@ async function initializeDatabase(adminEmail, adminDisplayName, adminPassword) {
         await adminUser.save();
         console.log('Admin user created:', adminDisplayName);
 
+        const JohnDoe = new UserModel({
+            firstName: 'John',
+            lastName: 'Doe',
+            email: 'johndoe@gmail.com',
+            displayName: 'JohnDoe',
+            password: await bcrypt.hash('password', saltRounds),
+            reputation: 100,
+            role: 'user',
+        });
+        await JohnDoe.save();
+        console.log('User created:', JohnDoe.displayName);
         
         // Create some link flairs
         const flair1 = await new LinkFlairModel({ content: 'Discussion' }).save();

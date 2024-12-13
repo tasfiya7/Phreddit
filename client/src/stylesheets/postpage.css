@@ -119,4 +119,13 @@
             padding: 6px 8px;
         }
     }
+
+    #rep-warning {
+        color: blueviolet;
+        font-size: 18px;
+        font-weight: bold;
+        padding-bottom: 10px;
+        width: 30%;
+        align-items: center;
+    }
 }

@@ -1,6 +1,37 @@
 .pl-header {
     padding: 0 20px;
 
+    #join-btn {
+        display: inline-block;
+        border: 0px solid #000;
+        border-radius: 5px;
+        text-align: center;
+        cursor: pointer;
+        padding: 5px 15px;
+        margin: 0 10px;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    #join-btn.join {
+        background-color: orangered;
+        color : white;
+    }
+
+    #join-btn.join:hover {
+        background-color: #e03d00;
+        color : #fff;
+    }
+
+    #join-btn.leave {
+        background-color: lightgray;
+        color : black;
+    }
+
+    #join-btn.leave:hover {
+        background-color: black;
+        color : white;
+    }
+
     .box {
         display: flex;
         justify-content: space-between;

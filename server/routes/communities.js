@@ -27,4 +27,21 @@ router.post('/communities', async (req, res) => {
     }
 });
 
+router.put('/joinleave', async (req, res) => {
+    try {
+        const community = await CommunityModel.findById(req.body.communityID);
+
+        if (community.members.includes(req.body.userID)) {
+            community.members.pull(req.body.userID);
+        } else {
+            community.members.push(req.body.userID);
+        }
+        community.memberCount = community.members.length;
+        await community.save();
+        res.status(200).send(community.members);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to join/leave community' });
+    }
+});
+
 module.exports = router;

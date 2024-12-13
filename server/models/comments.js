@@ -11,14 +11,6 @@ var CommentSchema = new Schema({
     commentIDs: [{ type: mongoose.Schema.Types.ObjectId, ref: 'CommentModel' }], // Child comments
 }, { timestamps: true }); 
 
-CommentSchema.virtual('upvotes').get(function () {
-    return this.upvoters.length;
-});
-
-CommentSchema.virtual('downvotes').get(function () {
-    return this.downvoters.length;
-});
-
 CommentSchema.virtual('url').get(function () {
     return '/comments/' + this._id;
 });
