@@ -15,8 +15,8 @@ router.post('/communities', async (req, res) => {
     const community = new CommunityModel({
         name: req.body.name,
         description: req.body.description,
+        madeBy: req.body.madeBy,
         startDate: req.body.startDate,
-        members: req.body.members,
     });
 
     try {

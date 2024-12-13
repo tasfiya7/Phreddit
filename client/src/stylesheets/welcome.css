@@ -59,13 +59,13 @@
 }
 
 .welcome-container button.guest-btn {
-    background-color: lightgray;
-    color: black;
+    background-color: gray;
+    color: white;
 }
 
 .welcome-container button.guest-btn:hover {
     color: white;
-    background-color: gray; /* Slightly darker gray on hover */
+    background-color: orangered; /* Slightly darker gray on hover */
 }
 
 .welcome-container form {

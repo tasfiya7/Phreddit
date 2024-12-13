@@ -24,7 +24,7 @@ router.post('/comments/post', async (req, res) => {
         // Find the post that the comment belongs to 
         const PostModel = require('../models/posts');
         const post = await PostModel.findById(postID);
-        await post.commentIDs.push(comment);
+        post.commentIDs.push(comment);
         await post.save();
         res.json(comment);
     } catch (error) {
@@ -44,7 +44,7 @@ router.post('/comments/comment', async (req, res) => {
         
         // Find the comment that the comment belongs to 
         const parentComment = await CommentModel.findById(commentID);
-        await parentComment.commentIDs.push(comment);
+        parentComment.commentIDs.push(comment);
         await parentComment.save();
         res.json(comment);
     } catch (error) {

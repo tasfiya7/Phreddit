@@ -5,8 +5,9 @@ var Schema = mongoose.Schema;
 var CommunitySchema = new Schema({
     name: {type: String, required: true, unique: true },
     description: {type: String, required: true},
-    postIDs: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }],
+    madeBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true}, // Creator of the community
     startDate: {type: Date, required: true, default: Date.now},
+    postIDs: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }],
     members: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }], // Members of the community
     memberCount: { type: Number, default: 0 }, // Number of members
 }, { timestamps: true });

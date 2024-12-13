@@ -19,16 +19,16 @@ router.post('/posts', async (req, res) => {
         content: req.body.content,
         postedBy: req.body.postedBy,
         postedDate: req.body.postedDate,
-        views: 0,
+        community: req.body.community,
     });
 
     if(req.body.linkFlairID != "") {
         if (!req.body.newFlair) {
             const linkFlair = await LinkFlairModel.findById(req.body.linkFlairID);
             post.linkFlairID = linkFlair._id;
-        } else {
+        } else { // Creates a new flair
             const newLinkFlair = new LinkFlairModel({
-                content: req.body.newFlair,
+                content: req.body.linkFlairID,
             });
             const savedLinkFlair = await newLinkFlair.save();
             post.linkFlairID = savedLinkFlair._id;
@@ -37,11 +37,12 @@ router.post('/posts', async (req, res) => {
 
     try {
         const newPost = await post.save();
-        const community = await CommunityModel.findById(req.body.communityID);
+        const community = await CommunityModel.findById(req.body.community);
         community.postIDs.push(newPost._id);
         await community.save();
         res.status(201).send(post._id);
     } catch (error) {
+        console.log(error);
         res.status(400).json({ error: 'Failed to create post' });
     }
 });

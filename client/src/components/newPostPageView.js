@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import '../stylesheets/newpost.css';
 
-export default function NewPostPage({ api, postCount, communities, flairs, onPostSubmit, onCancel }) {
+export default function NewPostPage({ postCount, communities, flairs, onPostSubmit, onCancel }) {
   const [selectedCommunity, setSelectedCommunity] = useState('');
   const [postTitle, setPostTitle] = useState('');
   const [selectedFlair, setSelectedFlair] = useState('');
   const [newFlair, setNewFlair] = useState('');
   const [postContent, setPostContent] = useState('');
-  const [username, setUsername] = useState('');
   const [errors, setErrors] = useState({});
 
   const validateForm = () => {
@@ -20,7 +19,6 @@ export default function NewPostPage({ api, postCount, communities, flairs, onPos
       }
     if (newFlair && newFlair.length > 30) newErrors.newFlair = 'New flair must be 30 characters or less.';
     if (!postContent) newErrors.content = 'Post content cannot be empty.';
-    if (!username) newErrors.username = 'Username is required.';
     return newErrors;
   };
 
@@ -41,15 +39,12 @@ export default function NewPostPage({ api, postCount, communities, flairs, onPos
 
     // Create new post object
     const newPost = {
-      postID: `p${postCount + 1}`,
       title: postTitle,
       content: postContent,
-      linkFlairID: flairID,
-      postedBy: username,
       postedDate: new Date(),
-      commentIDs: [],
-      views: 0,
-      newFlair: newFlair,
+      community: selectedCommunity,
+      linkFlairID: flairID,
+      newFlair: (newFlair) ? true : false,
     };
 
     // Find and update the selected community
@@ -136,19 +131,6 @@ export default function NewPostPage({ api, postCount, communities, flairs, onPos
             required
           />
           {errors.content && <p className="error">{errors.content}</p>}
-        </div>
-
-        {/* Username */}
-        <div className="form-group">
-          <label htmlFor="username">Your Username *</label>
-          <input
-            type="text"
-            id="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
-          {errors.username && <p className="error">{errors.username}</p>}
         </div>
 
         {/* Submit and Cancel Buttons */}

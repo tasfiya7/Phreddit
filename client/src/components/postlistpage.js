@@ -57,6 +57,12 @@ export default function PostListPage({ model, mode, title, initialPosts, onPostS
     setSort(sort);
   };
 
+
+  if(mode === 'community'){
+    var community = model.data.communities.find(c => c.name === title);
+    var madeBy = model.data.users.find(u => u.userID === community.madeBy);
+  }
+
   const renderPostList = () => {
     if(initialPosts.length === 0) return;
     const posts = sortPosts(model, initialPosts, sort);
@@ -77,7 +83,7 @@ export default function PostListPage({ model, mode, title, initialPosts, onPostS
               {post.content.slice(0, 80).trim()}
               {post.content.length > 80 ? '...' : ''}
             </p>
-            <p>Views: {post.views} | Comments: {getTotalComments(model, post.commentIDs)}</p>
+            <p>Votes: {post.upvoters.length - post.downvoters.length} | Views: {post.views} | Comments: {getTotalComments(model, post.commentIDs)}</p>
           </div>
           <hr></hr>
         </div>
@@ -91,12 +97,12 @@ export default function PostListPage({ model, mode, title, initialPosts, onPostS
       <div className="pl-header">
         <ListViewHeader title={title} onSortSelect={handleSortSelect}/>
         {mode==='community' && <>
-          <p className="community-description">{model.data.communities.find(c => c.name === title).description}</p>
-          <p>Created {timestampsdt(model.data.communities.find(c => c.name === title).startDate)}</p>
+          <p className="community-description">{community.description}</p>
+          <p>Created {timestampsdt(community.startDate)} by {madeBy.displayName}</p>
         </>}
         <p>
           {initialPosts.length} Post{initialPosts.length === 1 ? '' : 's'}
-          {mode === 'community' && <> | {model.data.communities.find(c => c.name === title).memberCount} Members</>}
+          {mode === 'community' && <> | {community.memberCount} Members</>}
         </p>
       </div>
       <hr></hr>

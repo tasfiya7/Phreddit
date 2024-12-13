@@ -56,6 +56,7 @@ async function initializeDatabase(adminEmail, adminDisplayName, adminPassword) {
         const community1 = new CommunityModel({
             name: 'Am I the Jerk?',
             description: 'A practical application of the principles of justice.',
+            madeBy: adminUser._id,
             startDate: new Date('August 10, 2014 04:18:00'),
             members: [adminUser._id],
             memberCount: 1,
@@ -64,6 +65,7 @@ async function initializeDatabase(adminEmail, adminDisplayName, adminPassword) {
         const community2 = new CommunityModel({
             name: 'The History Channel',
             description: 'A fantastical reimagining of our past and present.',
+            madeBy: adminUser._id,
             startDate: new Date('May 4, 2017 08:32:00'),
             members: [adminUser._id],
             memberCount: 1,
@@ -82,9 +84,6 @@ async function initializeDatabase(adminEmail, adminDisplayName, adminPassword) {
             community: community1._id, 
             linkFlairID: flair1._id, 
             views: 100,
-            upvotes: 50,
-            downvotes: 5,
-            reputationImpact: 245, // Example: (5 points per upvote, -10 per downvote)
             commentIDs: [], 
         });
 
@@ -96,9 +95,6 @@ async function initializeDatabase(adminEmail, adminDisplayName, adminPassword) {
             community: community2._id, 
             linkFlairID: flair2._id, 
             views: 200,
-            upvotes: 100,
-            downvotes: 10,
-            reputationImpact: 490, // Example calculation
             commentIDs: [], 
         });
 
@@ -118,9 +114,6 @@ async function initializeDatabase(adminEmail, adminDisplayName, adminPassword) {
             commentedBy: adminUser._id,
             post: post1._id,
             commentedDate: new Date('2024-08-16T14:00:00Z'),
-            upvotes: 30,
-            downvotes: 5,
-            reputationImpact: 125,
         });
         const savedParentComment = await parentComment.save();
 
@@ -129,19 +122,13 @@ async function initializeDatabase(adminEmail, adminDisplayName, adminPassword) {
             commentedBy: adminUser._id,
             post: post1._id,
             commentedDate: new Date('2024-08-16T15:00:00Z'),
-            upvotes: 10,
-            downvotes: 1,
-            reputationImpact: 45,
         });
 
         const childComment2 = new CommentModel({
             content: 'I prefer Rust for performance-critical tasks.',
             commentedBy: adminUser._id,
             post: post1._id,
-            commentedDate: new Date('2024-08-16T16:00:00Z'),
-            upvotes: 15,
-            downvotes: 0,
-            reputationImpact: 75,
+            commentedDate: new Date('2024-12-11T16:00:00Z'),
         });
 
         const savedChildComment1 = await childComment1.save();

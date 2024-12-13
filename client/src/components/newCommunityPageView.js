@@ -2,19 +2,18 @@ import React, { useState } from 'react';
 import '../stylesheets/community.css';
 
 
-export default function NewCommunityPage({ onCommunitySubmit, onCancel }) {
+export default function NewCommunityPage({ model, onCommunitySubmit, onCancel }) {
   const [communityName, setCommunityName] = useState('');
   const [description, setDescription] = useState('');
-  const [username, setUsername] = useState('');
   const [errors, setErrors] = useState({});
 
   const validateForm = () => {
     const newErrors = {};
     if (!communityName) newErrors.communityName = 'Community name is required.';
+    if (model.data.communities.find(c => c.name === communityName)) newErrors.communityName = 'Community name already exists.';
     if (communityName.length > 100) newErrors.communityName = 'Max 100 characters allowed.';
     if (!description) newErrors.description = 'Description is required.';
     if (description.length > 500) newErrors.description = 'Max 500 characters allowed.';
-    if (!username) newErrors.username = 'Username is required.';
     return newErrors;
   };
 
@@ -26,13 +25,9 @@ export default function NewCommunityPage({ onCommunitySubmit, onCancel }) {
     }
 
     const newCommunity = {
-      communityID: `community${Date.now()}`,
       name: communityName,
       description,
-      postIDs: [],
       startDate: new Date(),
-      members: [username],
-      memberCount: 1,
     };
 
     onCommunitySubmit(newCommunity); // Pass new community back to parent component
@@ -67,19 +62,6 @@ export default function NewCommunityPage({ onCommunitySubmit, onCancel }) {
             required
           />
           {errors.description && <p className="error">{errors.description}</p>}
-        </div>
-
-        {/* Username */}
-        <div className="form-group">
-          <label htmlFor="username"><b>Your Username *</b></label>
-          <input
-            type="text"
-            id="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
-          {errors.username && <p className="error">{errors.username}</p>}
         </div>
 
         {/* Buttons */}

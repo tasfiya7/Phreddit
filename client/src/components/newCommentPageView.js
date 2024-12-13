@@ -4,14 +4,12 @@ import '../stylesheets/comment.css';
 
 export default function NewCommentPage({ onCommentSubmit, onCancel, parentID, parentType }) {
     const [content, setContent] = useState('');
-    const [username, setUsername] = useState('');
     const [errors, setErrors] = useState({});
   
     const validateForm = () => {
       const newErrors = {};
       if (!content) newErrors.content = 'Comment content is required.';
       if (content.length > 500) newErrors.content = 'Max 500 characters allowed.';
-      if (!username) newErrors.username = 'Username is required.';
       return newErrors;
     };
   
@@ -23,10 +21,7 @@ export default function NewCommentPage({ onCommentSubmit, onCancel, parentID, pa
       }
   
       const newComment = {
-        commentID: `comment${Date.now()}`,
         content,
-        commentIDs: [], // To hold replies
-        commentedBy: username,
         commentedDate: new Date(),
       };
   
@@ -48,19 +43,6 @@ export default function NewCommentPage({ onCommentSubmit, onCancel, parentID, pa
               className="large-textarea"
             />
             {errors.content && <p className="error">{errors.content}</p>}
-          </div>
-  
-          <div className="form-group">
-            <label htmlFor="username"><b>Your Username *</b></label>
-            <input
-              type="text"
-              id="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-              className="large-input"
-            />
-            {errors.username && <p className="error">{errors.username}</p>}
           </div>
   
           <div className="form-actions">

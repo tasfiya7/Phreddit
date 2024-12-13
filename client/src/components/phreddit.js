@@ -60,7 +60,6 @@ async function fetchData () {
 
 var model = await fetchData();
 
-console.log(model);
 
 const search = (model, query) => {
   const queryList = query.trim().toLowerCase().split(' ');
@@ -104,7 +103,7 @@ export default function Phreddit() {
   const [commentParentID, setCommentParentID] = useState(null); // Track the parent ID of the comment
   const [commentParentType, setCommentParentType] = useState('');
   const [userMode, setUserMode] = useState(null); // null, 'guest', or 'user'
-  const [session, setSession] = useState(null); // Session State
+  const [user, setUser] = useState(null); // User (ID)
 
   // Creating Communities
   const handleCreateCommunityView = () => {
@@ -119,9 +118,8 @@ export default function Phreddit() {
     const newCommunityID = await api.post('/communities', {
       name: newCommunity.name,
       description: newCommunity.description,
+      madeBy: user,
       startDate: newCommunity.startDate,
-      members: newCommunity.members,
-      memberCount: newCommunity.memberCount,
     });
 
     model = await fetchData();
@@ -143,12 +141,10 @@ export default function Phreddit() {
     await api.post('/posts', {
       title: newPost.title,
       content: newPost.content,
-      linkFlairID: newPost.linkFlairID,
-      postedBy: newPost.postedBy,
+      postedBy: user,
       postedDate: newPost.postedDate,
-      views: newPost.views,
-
-      communityID: community.communityID,
+      community: newPost.community,
+      linkFlairID: newPost.linkFlairID,
       newFlair: newPost.newFlair,
     });
 
@@ -170,23 +166,18 @@ export default function Phreddit() {
 
     // Update the parent object (post or comment) with the new comment ID
     if (parentType === 'post') {
-      // const post = model.data.posts.find(p => p.postID === parentID);
-      // post.commentIDs.unshift(newComment.commentID);
 
       await api.post('/comments/post', {
         postID: parentID,
-        commentedBy: newComment.commentedBy,
         content: newComment.content,
+        commentedBy: user,
         commentedDate: newComment.commentedDate,
       });
     } else {
-      // const parentComment = model.data.comments.find(c => c.commentID === parentID);
-      // parentComment.commentIDs.unshift(newComment.commentID);
-
       await api.post('/comments/comment', {
         commentID: parentID,
-        commentedBy: newComment.commentedBy,
         content: newComment.content,
+        commentedBy: user,
         commentedDate: newComment.commentedDate,
       });
     }
@@ -233,15 +224,65 @@ export default function Phreddit() {
     setView('post');
   };
 
+  // Handle voting
+  const handleVote = async (id, type, targetID, vote) => {
+    await api.put('/vote', {
+      id: id,
+      type: type,
+      voterID: user,
+      targetID: targetID,
+      vote: vote,
+    });
+    model = await fetchData();
+    setSelectedPost(model.data.posts.find(p => p.postID === selectedPost.postID));
+  };
+
+  // Handle profile view
+  const handleProfileView = () => {
+    setSelectedCommunity(null);
+    setSelectedPost(null);
+    handleHomeView();
+  };
+
+  // Logging out
+  const logout = async () => {
+    await api.post('/logout');
+    setUser(null);
+  }
+
+  const handleLogout = async () => {
+    await logout();
+    setUserMode(null);
+    setSelectedCommunity(null);
+    setSelectedPost(null);
+    setView('welcome');
+  }
+
   // Handle logging in
-  const handleLogin = (session) => {
-    if(session === 'guest') {
+  const handleLogin = async (userID) => {
+    if(userID === 'guest') {
+      if(userMode === 'user') {
+        await logout();
+        console.log('Successfully logged out.');
+      }
       setUserMode('guest');
+      console.log('Logged in as a guest.');
     } else {
       setUserMode('user');
-      setSession(session);
+      setUser(userID);
+      console.log('Logged in as', model.data.users.find(u => u.userID === userID).displayName);
     }
     setView('home');
+  };
+
+  // Handle switching to welcome view (Phreddit button)
+  const handleWelcomeView = () => {
+    setSelectedCommunity(null);
+    setSelectedPost(null);
+    if(userMode === 'guest') {
+      setUserMode(null);
+    }
+    setView('welcome');
   };
 
   // Handle switching to the home view
@@ -268,6 +309,7 @@ export default function Phreddit() {
       return (<WelcomePage
         api = {api}
         model = {model}
+        userMode = {userMode}
         onLogin={handleLogin}
       />);
     }
@@ -293,8 +335,11 @@ export default function Phreddit() {
     if (view === 'post') {
       return (<PostPage 
         model={model} 
+        userMode={userMode}
+        userID={user}
         post={selectedPost} 
         onCreateComment={handleCreateCommentView}
+        onVote={handleVote}
       />);
     }
     if (view === 'search') {
@@ -310,7 +355,6 @@ export default function Phreddit() {
     }
     if (view === 'newPost') {
       return (<NewPostPage
-        api = {api}
         postCount={model.data.posts.length}
         communities={model.data.communities}
         flairs={model.data.linkFlairs}
@@ -320,12 +364,14 @@ export default function Phreddit() {
     }
     if (view === 'newCommunity') {
       return (<NewCommunityPage
+        model = {model}
         onCommunitySubmit={handleCommunitySubmit}
         onCancel={handleHomeView}
       />);
     }
     if (view === 'newComment') {
       return (<NewCommentPage
+        user={user}
         onCommentSubmit={handleCommentSubmit}
         onCancel={() => setView('post')}
         parentID={commentParentID}
@@ -339,9 +385,12 @@ export default function Phreddit() {
       <Banner 
         mode={view} 
         userMode={userMode}
-        onSelectHome={handleHomeView} 
+        displayName={userMode === 'user' ? model.data.users.find(u => u.userID === user).displayName : ''}
+        onPhreddit={handleWelcomeView} 
         onSearch={handleSearch}
         onCreatePost={handleCreatePost} 
+        onProfile={handleProfileView}
+        onLogout={handleLogout}
       />
       <hr></hr>
       <div className="app-container">

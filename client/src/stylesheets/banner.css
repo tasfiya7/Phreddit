@@ -1,4 +1,4 @@
-.banner {
+#banner {
   background-color: white;
   display: flex;
   justify-content: space-between;
@@ -7,25 +7,32 @@
   margin: 20px;
 }
 
-.banner-btn {
-  background-color: white;
-  color: orangered;
+#banner-btn {
+  background-color: orangered;
+  color: white;
   font-size: 250%;
   font-weight: bold;
   border: none;
-
-  padding: 20px 0px;
+  padding: 20px 35px;
+  border-radius: 20px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-.search-bar, .create-post-btn {
+#banner-btn:hover {
+  background-color: #e03d00;
+}
+
+/* All 3 buttons in the banner */
+#search-bar, #create-post-btn, #profile-btn{
   display: block;
   font-size: 20px;
-  padding: 20px;
+  padding: 26px;
   border: 1px solid #000;
 }
+/* <-------------------------> */
 
-.search-bar {
+#search-bar {
   border-radius: 50px;
   max-width: 150%;
   width: auto;
@@ -36,23 +43,60 @@
   text-decoration: none;
 }
 
-.create-post-btn {
-  background-color: lightgray;
-  border-radius: 15px;
-  border: none;
-}
+#banner-right {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
 
-.create-post-btn#user {
-  cursor: pointer;
-}
+  button {
+    font-size: 20px;
+    background-color: lightgray;
+    border-radius: 15px;
+    border: none;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  .user {
+    cursor: pointer;
+  }
+  
+  .guest {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+  
+  .user:hover{
+    background-color: #FF4500;
+    color: #fff;
+  }
 
-.create-post-btn#guest {
-  cursor: not-allowed;
-  opacity: 0.5;
-}
+  #name-log-div {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: auto;
+    gap: 5px;
+  }
 
-.create-post-btn#user:hover{
-  background-color: #FF4500;
-  color: #fff;
+  #display-name {
+    font-family: arial;
+    font-style: normal;
+    background-color: orangered;
+    color: white;
+  }
+
+  #display-name, #logout-btn {
+    font-style: normal;
+    font-size: 18px;
+    border-radius: 10px;
+    margin: 0;
+    padding: 7px 15px;
+  }
+
+  #logout-btn:hover {
+    background-color: #FF4500;
+    color: #fff;
+  }
 }
 

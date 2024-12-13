@@ -61,6 +61,7 @@ app.use(require('./routes/posts'));
 app.use(require('./routes/comments'));
 app.use(require('./routes/linkFlairs'));
 app.use(require('./routes/incrementViews'));
+app.use(require('./routes/vote'));
 app.use(require('./routes/login'));
 
 

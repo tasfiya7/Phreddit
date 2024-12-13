@@ -10,14 +10,17 @@ var PostSchema = new Schema({
     community: { type: mongoose.Schema.Types.ObjectId, ref: 'Community', required: true }, // Community the post belongs to
     linkFlairID: { type: mongoose.Schema.Types.ObjectId, ref: 'LinkFlair' }, // Optional flair for categorization
     views: { type: Number, default: 0 }, // View count
-    upvotes: { type: Number, default: 0 }, // Number of upvotes
-    downvotes: { type: Number, default: 0 }, // Number of downvotes
-    reputationImpact: { type: Number, default: 0 }, // Reputation impact for the poster
+    upvoters: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }], // Users who upvoted
+    downvoters: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }], // Users who downvoted
     commentIDs: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }], // References to comments
 }, { timestamps: true });
 
-PostSchema.virtual('url').get(function () {
-    return '/posts/' + this._id;
+PostSchema.virtual('upvotes').get(function () {
+    return this.upvoters.length;
+});
+
+PostSchema.virtual('downvotes').get(function () {
+    return this.downvoters.length;
 });
 
 module.exports = mongoose.model('PostModel', PostSchema);

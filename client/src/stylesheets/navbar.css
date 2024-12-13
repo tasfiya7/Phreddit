@@ -14,6 +14,10 @@
   h3 {
     margin: 0;
   }
+
+  button {
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
 }
 
 .navbar::-webkit-scrollbar {
@@ -27,12 +31,6 @@
   color: black;
   border: none;
   border-radius: 5px;
-  cursor: pointer; 
-}
-
-.home-btn:hover {
-  background-color: orangered;
-  color: white;
 }
 
 .create-community-btn {
@@ -44,23 +42,7 @@
   color: white;
   border: none;
   border-radius: 5px;
-  cursor: pointer;
 }
-
-.create-community-btn#user {
-  cursor: pointer;
-}
-
-.create-community-btn#guest {
-  cursor: not-allowed;
-  opacity: 0.5;
-}
-
-.create-community-btn#user:hover {
-  background-color: orangered;
-  color: white;
-}
-
 
 .community-btn {
   width: 100%;
@@ -70,15 +52,15 @@
   color: black;
   border: none;
   border-radius: 5px;
-  cursor: pointer;
 }
 
-.community-btn#guest {
+.guest {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-.community-btn#user:hover {
+.user:hover {
+  cursor: pointer;
   background-color: orangered;
   color: white;
 }

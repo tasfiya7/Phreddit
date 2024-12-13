@@ -17,33 +17,106 @@
         margin: 15px 0;
     }
 
-    .comment {
-        margin: 20px 0;
-
-        p {
-            margin: 8px 0;
-        }
-    }
-
     button {
         background-color: lightgray;
         color: black;
         border: none;
         border-radius: 5px;
-        cursor: pointer; 
     }
-      
-    button:hover {
+
+    #post-interactions, #comment-interactions{
+        display: flex;
+        align-items: center;
+        margin: 10px 0;
+        gap: 5px;
+        margin-bottom: 5px;
+
+        p {
+            font-family: Arial;
+            font-size: 20px;
+            margin: 0;
+            padding: 0 5px;
+        }
+
+        .vote-btn {
+            padding: 0 7px;
+            padding-top: 7px;
+            padding-bottom: 2px;
+            border-radius: 5px;
+            font-size: 20px;
+        }
+    
+        .comment-btn {
+            font-size: 16px;
+            margin-left: 10px;
+            padding: 8px;
+        }
+
+        .comment-upvote-btn, .comment-downvote-btn{
+            padding: 0 7px;
+            padding-top: 7px;
+            padding-bottom: 2px;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+    }
+
+    #comment-interactions{
+        p {
+            font-size: revert;
+        }
+    }
+
+    #upvote-btn.user.unvoted:hover, .comment-upvote-btn.unvoted:hover{
         background-color: orangered;
         color: white;
     }
 
-    .comment-btn {
-        padding: 8px;
-        margin-bottom: 5px;
+    #downvote-btn.user.unvoted:hover, .comment-downvote-btn.unvoted:hover{
+        background-color: #4f15d8;
+        color: white;
     }
 
-    .reply-btn {
-        padding: 6px 8px;
+    .upvoted{
+        background-color: orangered;
+        color: white;
+
+        &:hover{
+            background-color: #e03d00;
+        }
+    }
+
+    .downvoted{
+        background-color: #4f15d8;
+        color: white;
+
+        &:hover{
+            background-color: #3b0f9e;
+        }
+    }
+
+    .vote-btn.guest, .comment-btn.guest, .comment-vote-btn.guest, .reply-btn.guest{
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .comment-btn.user:hover{
+        background-color: orangered;
+        color: white;
+        cursor: pointer;
+    }
+
+    .comment-section {
+        .comment {
+            margin: 20px 0;
+    
+            p {
+                margin: 8px 0;
+            }
+        }
+    
+        .reply-btn {
+            padding: 6px 8px;
+        }
     }
 }

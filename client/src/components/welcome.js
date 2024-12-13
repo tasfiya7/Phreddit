@@ -1,35 +1,77 @@
 import React, { useEffect, useState } from 'react';
 import '../stylesheets/welcome.css';
 
-
-export default function Welcome({ api, model, onLogin }) {
+export default function Welcome({ api, userMode, onLogin }) {
     const [page, setPage] = useState('welcome');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [displayName, setDisplayName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
 
-    useEffect(() => {
-        console.log(document.cookie.split(';'));
-        const sessionCookie = document.cookie.split(';').find(cookie => cookie.startsWith('sessionId'));
-        api.get('/get-session', { withCredentials: true })
+    const getSession = async () => {
+        await api.get('/get-session', { withCredentials: true })
             .then(response => {
-                const sessionId = response.data.sessionId;
-                onLogin(sessionId);
+                const userID = response.data.userID;
+                console.log('Relogin Success!');
+                onLogin(userID);
             })
             .catch(err => {
-                console.log(err.status);
-            })
-    });
+                console.log(err.response.data.message);
+            });
+    };
+
+    useEffect(() => {
+        if(!userMode || userMode === 'guest') { // If not logged in, check for session
+            if (document.cookie.includes('connect.sid')){
+                getSession();
+            }
+        }
+    }, []);
 
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const response = await api.post('/login', { email, password }, { withCredentials: true });
-            const sessionId = response.data.sessionId;
-            console.log('sessionId: ', sessionId);
-            onLogin(sessionId);
+            const res = await api.post('/login', { email, password }, { withCredentials: true });
+            const sessionId = res.data.sessionId;
+            const userID = res.data.userID;
+            console.log('Login Success!');
+            onLogin(userID);
         } catch (err) {
-            setError('Login failed. ' + err.response.data.error);
+            setError('Login failed. ' + err.res.data.error);
+        }
+    };
+
+    const handleRegister = async (e) => {
+        e.preventDefault();
+
+        // Throw error if password contains their first name, last name, email, or display name
+        if (password.includes(firstName) || password.includes(lastName)){
+            setError('Password cannot contain your name!');
+            return;
+        } else if (password.includes(email.substring(0, email.indexOf('@')))){
+            setError('Password cannot contain your email!');
+            return;
+        } else if (password.includes(displayName)){
+            setError('Password cannot contain your display name!');
+            return;
+        }
+
+        try {
+            const res = await api.post('/register', {
+                firstName,
+                lastName,
+                email,
+                displayName,
+                password,
+            }, { withCredentials: true });
+            
+            console.log('Registery Success!');
+            setError('');
+            setPage('welcome');
+        } catch (err) {
+            setError(err.response.data.error);
         }
     };
 
@@ -49,20 +91,10 @@ export default function Welcome({ api, model, onLogin }) {
             <div className="welcome-container">
                 <h1>Login</h1>
                 <form onSubmit={handleLogin}>
-                    <input 
-                        type="email" 
-                        placeholder="Email" 
-                        value={email} 
-                        onChange={(e) => setEmail(e.target.value)} 
-                        required 
-                    />
-                    <input 
-                        type="password" 
-                        placeholder="Password" 
-                        value={password} 
-                        onChange={(e) => setPassword(e.target.value)} 
-                        required 
-                    />
+                    <input type="email" placeholder="Email" value={email} 
+                        onChange={(e) => setEmail(e.target.value)} required />
+                    <input type="password" placeholder="Password" value={password} 
+                        onChange={(e) => setPassword(e.target.value)} required />
                     <button className="login-btn" type="submit">Login</button>
                 </form>
                 {error && <p className="error">{error}</p>}
@@ -75,14 +107,20 @@ export default function Welcome({ api, model, onLogin }) {
         <div className="welcome-page">
             <div className="welcome-container">
                 <h1>Register</h1>
-                <form onSubmit={(e) => { e.preventDefault(); onLogin('home'); }}>
-                    <input type="text" placeholder="First Name" required />
-                    <input type="text" placeholder="Last Name" required />
-                    <input type="email" placeholder="Email" required />
-                    <input type="text" placeholder="Username" required />
-                    <input type="password" placeholder="Password" required />
-                    <button className="register-btn" type="submit">Register</button>
+                <form onSubmit={handleRegister}>
+                    <input type="text" placeholder="First Name" 
+                    value={firstName} onChange={(e) => setFirstName(e.target.value)} required />
+                    <input type="text" placeholder="Last Name" 
+                    value={lastName} onChange={(e) => setLastName(e.target.value)} required />
+                    <input type="email" placeholder="Email"
+                    value={email} onChange={(e) => setEmail(e.target.value)} required />
+                    <input type="text" placeholder="Display Name"
+                    value={displayName} onChange={(e) => setDisplayName(e.target.value)} required />
+                    <input type="password" placeholder="Password"
+                    value={password} onChange={(e) => setPassword(e.target.value)} required />
+                    <button className="register-btn" type="submit">Sign Up</button>
                 </form>
+                {error && <p className="error">{error}</p>}
                 <button className="login-btn" onClick={() => setPage('welcome')}>Back</button>
             </div>
         </div>
