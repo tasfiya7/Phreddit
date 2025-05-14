@@ -1,27 +1,7 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/MVUO33FO)
-# Term Project
+Phreddit
 
-Add design docs in *images/*
+• Full-stack Reddit-like web application with React.js, HTML, and CSS frontend, and Node.js/Express.js for backend, with MongoDB for data storage and Mongoose schema validation, and reliability with Jest unit tests.
 
-## Instructions to setup and run project
-Clearly explain the steps required to install and configure necessary packages,
-for both the server and the client, and the sequence of steps required to get
-your application running.
+• RESTful APIs for CRUD operations, supporting community management, upvoting/downvoting, threaded comments, post sorting (newest, oldest, most active), and search functionality
 
-
-In the sections below, list and describe each contribution briefly.
-
-## Minhaj Contribution
-Profile Page
-Nav Bar Sorting
-Post Sorting
-Login
-Community Joining
-
-## Tasfiya Contribution
-UML Diagrams
-Server Diagram
-Component Tree
-Routes
-User Model
-React / Express Tests
+• JWT authentication, bcrypt-secured password hashing, and a reputation system to control user actions, along with real-time updates for votes, comments, and post views
